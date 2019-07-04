@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-"""I like how it looks"""
 
 
 """
@@ -90,9 +89,7 @@ conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File"
 if not conditionFile:
     core.quit
     
-    
-print("This is my work")
-    
+
 
 
 # ================================================User interaction to select the file end===========================
