@@ -29,6 +29,7 @@ import os  # handy system and path functions
 import sys  # to get file system encoding
 
 from psychopy.hardware import keyboard
+from psychopy.visual import Circle
 
 
 
@@ -356,7 +357,7 @@ TrialsClock = core.Clock()
 slider = visual.Slider(win=win, name='slider',
     size=(0.05, 0.8), pos=(0.5, 0),
     labels=(sliderLeftT, sliderRightT), ticks=(sliderLeftP,sliderRightP),
-    granularity=0, style=('rating'),
+    granularity=0, style=['slider'],
     color='LightGray', font='HelveticaBold',
     flip=False, units="height")
     
@@ -366,7 +367,7 @@ slider = visual.Slider(win=win, name='slider',
     #  modify the style
     
 slider.marker.color = 'black'
-slider.marker.shape = 'circle'
+slider.marker = Circle(win, radius = 0.025, edges = 32, fillColor = 'black', lineColor = 'black')
 
     
 text1 = visual.TextStim(win=win, name='text1',
