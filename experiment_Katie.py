@@ -353,15 +353,16 @@ TrialsClock = core.Clock()
 
 
 
-
 slider = visual.Slider(win=win, name='slider',
-    size=(1.0, 0.05), pos=(0, -0.35),
+    size=(0.05, 0.8), pos=(0.5, 0),
     labels=(sliderLeftT, sliderRightT), ticks=(sliderLeftP,sliderRightP),
-    granularity=0, style=('triangleMarker',),
+    granularity=0, style=('rating'),
     color='LightGray', font='HelveticaBold',
     flip=False, units="height")
     
     
+    #  notice that the "size" of the slider controls whether the slider is verticle or horizontal
+
     
 text1 = visual.TextStim(win=win, name='text1',
     text='default text',
@@ -628,13 +629,15 @@ for thisRepeat in Repeat:
             
     
 
-        # Movement and record updates
-        if keyState[key.LEFT]:
+        #  Movement and record updates
+        #  changed to down and up according since it's a verticle slider
+        
+        if keyState[key.DOWN]:
             newRat = slider.rating - sliderSpeed
             slider.rating = newRat
             timerRecord.reset(t = timeConfidence)
         
-        if keyState[key.RIGHT]:
+        if keyState[key.UP]:
             newRat = slider.rating + sliderSpeed
             slider.rating = newRat
             timerRecord.reset (t = timeConfidence)
