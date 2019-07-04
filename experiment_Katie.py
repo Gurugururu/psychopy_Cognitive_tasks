@@ -647,7 +647,7 @@ for thisRepeat in Repeat:
         #    add count for entering this, set the True/False value accordingly for image and text
                 
         #    when entering = 1, image1 & txt1 finished, image2 & txt2 starts
-        #    when entering = 2, image2 & txt2 finished, image3 & txt3 starts
+        #    when entering = 2, image2 & txt2 finished, image3 & txt3 starts, and freeze the slider
         #    when entering = 3, image3 & txt3 finished, stop the entire trial
         
         
@@ -660,11 +660,21 @@ for thisRepeat in Repeat:
             command = None  #place holder
             
             if entering < 3:
+                 
+                command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
                 
-                command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))
+            if entering == 2:
+                
+                
+                command = command + "\nslider.setAutoDraw(False)"  # remove the slider in the third picture
+                
                 
             if entering == 3:
-                command = "continueRoutine = False"
+                
+                command = "continueRoutine = False"  # stop the routine
+                
+                
+                
                 
             exec(command)
             
