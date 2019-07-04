@@ -362,6 +362,11 @@ slider = visual.Slider(win=win, name='slider',
     
     
     #  notice that the "size" of the slider controls whether the slider is verticle or horizontal
+    
+    #  modify the style
+    
+slider.marker.color = 'black'
+slider.marker.shape = 'circle'
 
     
 text1 = visual.TextStim(win=win, name='text1',
@@ -775,7 +780,8 @@ for thisRepeat in Repeat:
     
     
     
-    keyRecord = trialKeyboard.getKeys(['left','right'])
+    #  modified to match the verticle rating
+    keyRecord = trialKeyboard.getKeys(['up','down'])
     
     
     addKeys = []
