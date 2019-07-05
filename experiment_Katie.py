@@ -29,7 +29,7 @@ import os  # handy system and path functions
 import sys  # to get file system encoding
 
 from psychopy.hardware import keyboard
-from psychopy.visual import Circle
+from psychopy.visual import Circle, Rect
 
 
 
@@ -175,6 +175,7 @@ def componentUpdate(component, time, frameN, isFirst):
     if component.status == NOT_STARTED:
         # keep track of start time/frame for later
         if isFirst == True:
+            event.clearEvents()  #Clean up the keyboard buffering
             component.setAutoDraw(True)
             
         component.tStart = time
@@ -265,12 +266,13 @@ win = visual.Window(
     blendMode='avg', useFBO=True, 
     units='height')
     
-    
+
+
     
 # ====================================Add pyglet window start====================================
     
 
-# initialize pyglet 
+# initialize pyglet trick
 
 keyState = key.KeyStateHandler()
 win.winHandle.push_handlers(keyState)
@@ -288,13 +290,10 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
+
+
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
-
-
-# Initialize components for Routine "Instruction"
-InstructionClock = core.Clock()
-
 
 
 
@@ -350,25 +349,34 @@ goodbyeText = visual.TextStim(win=win, name='goodbyeText',
 
 
 
-TrialsClock = core.Clock()
-
-
 
 slider = visual.Slider(win=win, name='slider',
-    size=(0.05, 0.8), pos=(0.5, 0),
+    size=(0.05, 0.6), pos=(0.5, 0),
     labels=(sliderLeftT, sliderRightT), ticks=(sliderLeftP,sliderRightP),
     granularity=0, style=['slider'],
-    color='LightGray', font='HelveticaBold',
+    color='black', font='HelveticaBold',
     flip=False, units="height")
     
     
     #  notice that the "size" of the slider controls whether the slider is verticle or horizontal
     
-    #  modify the style
     
-slider.marker.color = 'black'
-slider.marker = Circle(win, radius = 0.025, edges = 32, fillColor = 'black', lineColor = 'black')
-
+    
+#  change to desired style, using the in-built visual stimulus from psychopy
+    
+slider.marker = Circle(win, 
+                        radius = slider.size[0]*0.5, 
+                        edges = 32, 
+                        fillColor = 'gray', 
+                        lineColor = 'gray')
+                        
+slider.line = Rect(win, units=slider.units,
+                        pos=slider.pos,
+                        width=slider.size[0],
+                        height=slider.size[1]+0.005,
+                        lineColor='black', 
+                        fillColor = 'black',
+                        autoLog=False)
     
 text1 = visual.TextStim(win=win, name='text1',
     text='default text',
@@ -424,8 +432,16 @@ image3 = visual.ImageStim(
 
 
 
-# Create some handy timers
+#  Create some handy timers
+#  This clock is not used, but if wanted can record the entire timeline, need to be careful about the timeBuffering though
 globalClock = core.Clock()  # to track the time since experiment started
+TrialsClock = core.Clock()
+# instructionclock also later re-used for goodbye message
+InstructionClock = core.Clock()
+
+
+
+
 
 
 #-------------------------#
@@ -455,7 +471,7 @@ while True:
     
     
 
-    if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:# Fixate the mouse
+    if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:  # Fixate the mouse to the upper-right conor
         myMouse.setPos(newPos = (1,1))
     
     
@@ -490,7 +506,7 @@ while True:
     
 
 win.flip()  # get a blank screen
-core.wait(timeBuffering)  # buffering for participant
+#core.wait(timeBuffering)  # buffering for participant
 
 
 # -------Ending Routine "Instruction"-------
@@ -531,15 +547,23 @@ if thisRepeat != None:
 #--------------------#
 
 
+
+
+
 for thisRepeat in Repeat:
 
-
+    
     currentLoop = Repeat
     # abbreviate parameter names if possible (e.g. rgb = thisRepeat.rgb)
     if thisRepeat != None:
         for paramName in thisRepeat:
             exec('{} = thisRepeat[paramName]'.format(paramName))
-
+            
+            
+            
+    
+    
+    
     
     #--------------------#
     #-------Trials-------#
@@ -547,22 +571,14 @@ for thisRepeat in Repeat:
     
     
     
-    # ------Prepare to start Routine "Trials"-------
     
-    
-    
-    
-    t = 0
-    TrialsClock.reset()  # clock
-    frameN = -1
-    continueRoutine = True
-    
-    # create a keyboard to record all the keys pressed during one trial
-    trialKeyboard = keyboard.Keyboard()
     
     
     
     # ==========================================clock and list for record slider start=====================================================
+    
+    
+    
     
     timerRecord.reset(t=timeConfidence)
     
@@ -586,38 +602,72 @@ for thisRepeat in Repeat:
     
     # ==========================================entering start=====================================================
     
-    entering = 0  # for each repeat, entering start from 0
-     
+    entering = 0  # for each repeat, entering start from 0, therefore need to be initialized outside of the loop
+    
+    #core.wait(timeBuffering) # will be blank screen after end for the time required
+    
     # ==========================================entering end=====================================================
     
+    
+    
+    # ------Prepare to start Routine "Trials"-------
+    
+    
+    
+    
 
+    # create a keyboard to record all the keys pressed during one repeat
+    trialKeyboard = keyboard.Keyboard()
+    
+    
     
     
     # keep track of which components have finished
     TrialsComponents = [slider, text1, text2, text3, image1, image2, image3]
     
     for thisComponent in TrialsComponents:
-        initiateComponent(thisComponent)
+        initiateComponent(thisComponent)  # function wrote by me, set the values to None
+    
+    
+    
+    
+    win.recordFrameIntervals = True
+    win.refreshThreshold = 1/60 + 0.004
+    logging.console.setLevel(logging.WARNING)
+    
+    
+    core.wait(timeBuffering)  #blank screen for time buffering
+    
+    
+    t = 0
+    TrialsClock.reset()  # clock of the trial
+    frameN = -1
+    continueRoutine = True
     
     
     
     # -------Start Routine "Trials"-------
     while continueRoutine:
         # get current time
-        t = TrialsClock.getTime()
+        
+        
+        t = TrialsClock.getTime()  # current time
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         
         
-        
-        # update/draw components on each frame
-        
         if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:# Fixate the mouse
             myMouse.setPos(newPos = (1,1))
+            
+            # notice: I added this step because on my computer the setVisible of mouse event didn't work
+            # may be due to the mouse initialization in the slider class
+            # Therefore I just fixiated it s.t. it won't be used
+    
+    
+        # update/draw components on each frame
         
-    
-    
+        
         # ====================================Modify slider start====================================
-
+        
         
         
         
@@ -629,26 +679,10 @@ for thisRepeat in Repeat:
                 slider.setAutoDraw(True)
                 
             #update slider
-            componentUpdate(slider, t,frameN, False)
+            componentUpdate(slider, t, frameN, False)
         
         
-            
-    
-
-        #  Movement and record updates
-        #  changed to down and up according since it's a verticle slider
         
-        if keyState[key.DOWN]:
-            newRat = slider.rating - sliderSpeed
-            slider.rating = newRat
-            timerRecord.reset(t = timeConfidence)
-        
-        if keyState[key.UP]:
-            newRat = slider.rating + sliderSpeed
-            slider.rating = newRat
-            timerRecord.reset (t = timeConfidence)
-            
-            
         
         
         # see whether the decision is made, more specifically: 
@@ -656,39 +690,68 @@ for thisRepeat in Repeat:
         #    add count for entering this, set the True/False value accordingly for image and text
                 
         #    when entering = 1, image1 & txt1 finished, image2 & txt2 starts
-        #    when entering = 2, image2 & txt2 finished, image3 & txt3 starts, and freeze the slider
+        #    when entering = 2, image2 & txt2 finished, image3 & txt3 starts, and set the slider to read-only
         #    when entering = 3, image3 & txt3 finished, stop the entire trial
         
         
         
         if timerRecord.getTime() <= 0:
             
-            sliderHistorySecond.append([slider.getRating(), (TrialsClock.getTime()-timeConfidence)])  # record rating and the time of decision
+            
             
             entering += 1  #implement by 1
             command = None  #place holder
             
+            
+            
             if entering < 3:
                  
+                 
+                 
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
+                sliderHistorySecond.append([slider.getRating(), (TrialsClock.getTime()-timeConfidence)])  # record rating and the time of decision, append it to the list
                 
-            if entering == 2:
+                # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
+               
+               
+            if entering == 2:  # when we enter here for the second time
                 
                 
-                command = command + "\nslider.setAutoDraw(False)"  # remove the slider in the third picture
+                command += "\nslider.readOnly = True"  # set slider to read only for the third picture
+                command += "\nkeyRecord = trialKeyboard.getKeys(['up','down'])"#  get the keys here
                 
+                # notice: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
+                # notice:  modified to match the verticle rating using "up" and "down"
                 
             if entering == 3:
                 
                 command = "continueRoutine = False"  # stop the routine
                 
                 
-                
-                
             exec(command)
             
             timerRecord.reset(t = timeConfidence)  # reset the clock at the end s.t can count again
             
+        
+        
+        
+        #  Movement and record updates
+        #  changed to down and up according since it's a verticle slider
+        #  only detect during the first two pictures
+        
+        if entering <2 :
+            if keyState[key.DOWN]:
+                newRat = slider.rating - sliderSpeed
+                slider.rating = newRat
+                timerRecord.reset(t = timeConfidence)
+            
+            if keyState[key.UP]:
+                newRat = slider.rating + sliderSpeed
+                slider.rating = newRat
+                timerRecord.reset (t = timeConfidence)
+            
+            
+        
         
         
         
@@ -711,8 +774,6 @@ for thisRepeat in Repeat:
         imgFadeIn(image1, frameN, timeFadePara)
         
         
-        
-        
         # text2 + image2 updates
         componentUpdate(text2, t, frameN, False)
         componentUpdate(image2, t, frameN, False)
@@ -730,13 +791,9 @@ for thisRepeat in Repeat:
         # update opacity of img3
         imgFadeIn(image3, frameN, timeFadePara)
         
-
-
-
-
-
-
-
+        
+        
+        
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
             core.quit()
@@ -750,6 +807,9 @@ for thisRepeat in Repeat:
             win.flip()
     
     
+    
+    
+    
     # end this condition, save data
     
     
@@ -759,20 +819,20 @@ for thisRepeat in Repeat:
             thisComponent.setAutoDraw(False)
             
             
-    Repeat.addData('slider.started', slider.tStartRefresh)
-    Repeat.addData('slider.stopped', slider.tStopRefresh)
-    Repeat.addData('text1.started', text1.tStartRefresh)
-    Repeat.addData('text1.stopped', text1.tStopRefresh)
-    Repeat.addData('text2.started', text2.tStartRefresh)
-    Repeat.addData('text2.stopped', text2.tStopRefresh)
-    Repeat.addData('text3.started', text3.tStartRefresh)
-    Repeat.addData('text3.stopped', text3.tStopRefresh)
-    Repeat.addData('image1.started', image1.tStartRefresh)
-    Repeat.addData('image1.stopped', image1.tStopRefresh)
-    Repeat.addData('image2.started', image2.tStartRefresh)
-    Repeat.addData('image2.stopped', image2.tStopRefresh)
-    Repeat.addData('image3.started', image3.tStartRefresh)
-    Repeat.addData('image3.stopped', image3.tStopRefresh)
+    Repeat.addData('slider.startedFrame', slider.tStartRefresh)
+    Repeat.addData('slider.stoppedFrame', slider.tStopRefresh)
+    Repeat.addData('text1.startedFrame', text1.tStartRefresh)
+    Repeat.addData('text1.stoppedFrame', text1.tStopRefresh)
+    Repeat.addData('text2.startedFrame', text2.tStartRefresh)
+    Repeat.addData('text2.stoppedFrame', text2.tStopRefresh)
+    Repeat.addData('text3.startedFrame', text3.tStartRefresh)
+    Repeat.addData('text3.stoppedFrame', text3.tStopRefresh)
+    Repeat.addData('image1.startedFrame', image1.tStartRefresh)
+    Repeat.addData('image1.stoppedFrame', image1.tStopRefresh)
+    Repeat.addData('image2.startedFrame', image2.tStartRefresh)
+    Repeat.addData('image2.stoppedFrame', image2.tStopRefresh)
+    Repeat.addData('image3.startedFrame', image3.tStartRefresh)
+    Repeat.addData('image3.stoppedFrame', image3.tStopRefresh)
     
     
     
@@ -781,8 +841,7 @@ for thisRepeat in Repeat:
     
     
     
-    #  modified to match the verticle rating
-    keyRecord = trialKeyboard.getKeys(['up','down'])
+    
     
     
     addKeys = []
@@ -790,19 +849,22 @@ for thisRepeat in Repeat:
         addKeys.append([k.name, k.rt, k.duration])
     
     
-    Repeat.addData("slider.history_rating_timePoint", sliderHistorySecond)  # the slider rating and time, no movement for confidence time
-    Repeat.addData("keyboard.record_name_rt_duration", addKeys) #the entire keyboard record
+    Repeat.addData("slider.history_rating_timePoint", sliderHistorySecond)   # the slider rating and time, no movement for confidence time
+    Repeat.addData("keyboard.record_name_rt_duration", addKeys)  #the entire keyboard record
     
     
     
     # ==========================================Added custom data end=====================================================
     
     
+    win.recordFrameIntervals = False
+    print("Overall, %i frames were dropped." % win.nDroppedFrames)
     
     
     win.flip()
     
-    core.wait(timeBuffering) # will be blank screen after end for the time required
+
+    
     
     thisExp.nextEntry()
     
@@ -845,6 +907,7 @@ initiateComponent(goodbyeText)
 
 
 while True:
+    
     # get current time
     t = InstructionClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
