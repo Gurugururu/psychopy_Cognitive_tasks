@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-
-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v3.1.2),
     on June 17, 2019, at 13:56
@@ -13,8 +11,6 @@ If you publish work using this script please cite the PsychoPy publications:
     Peirce, JW (2009) Generating stimuli for neuroscience using PsychoPy.
         Frontiers in Neuroinformatics, 2:10. doi: 10.3389/neuro.11.010.2008
 """
-
-
 
 
 from __future__ import absolute_import, division
@@ -98,69 +94,6 @@ if not conditionFile:
 
 
 
-# reminder: if future putting the parameter and functions in other file?
-
-
-
-
-# ====================================Some newly defined parameters start====================================
-
-
-
-
-#====Time parameters(unit: second)====
-
-
-
-timeConfidence = 4  # The time we believe after which the participant have made their decision
-
-
-timeFadeIn = 2  #  time for the image to fade in
-timeFadePara = timeFadeIn * 60  # the parameter to divided with
-
-timeStartOne = 0.0  # the starting time for the first picture to emerge
-
-timeBuffering = 3  # Time for blank screen between each condition, set constant buffering for convenience
-
-
-
-#====slider parameters(unit: height)====
-
-
-
-
-
-# speed of the marker movement (sensitivity)
-
-sliderSpeed = 0.01
-
-
-
-
-
-# start and end points of slider
-# note: if want multiple ticks, need to modify the script in initialization section
-
-sliderLeftP = 0  # left end
-sliderRightP = 1  #right end
-
-sliderStartP = (sliderRightP + sliderLeftP)*0.5 # the initial position (any number between start and end)
-
-
-# text to display at start and end of slider
-
-sliderLeftT = "NO"
-sliderRightT = "YES"
-
-
-
-
-
-# ====================================Some newly defined parameters end====================================
-
-
-
-
 
 
 
@@ -175,7 +108,7 @@ def componentUpdate(component, time, frameN, isFirst):
     if component.status == NOT_STARTED:
         # keep track of start time/frame for later
         if isFirst == True:
-            event.clearEvents()  #Clean up the keyboard buffering
+            event.clearEvents()  # Clean up the keyboard buffering s.t. anything before the component start is not recorded (or you will get negative reaction time)
             component.setAutoDraw(True)
             
         component.tStart = time
@@ -283,6 +216,10 @@ win.winHandle.push_handlers(keyState)
 
 
 
+
+frameDur = None
+
+
 # store frame rate of monitor if we can measure it
 expInfo['frameRate'] = win.getActualFrameRate()
 if expInfo['frameRate'] != None:
@@ -292,21 +229,73 @@ else:
 
 
 
+
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
 
 
 
+# ====================================Some newly defined parameters start====================================
 
-# ====================================Own clock for record start====================================
+
+
+#====Time parameters(unit: frame)====
+
+
+
+timeConfidence = 4  # The time we believe after which the participant have made their decision
+
+
+timeFadeIn = 2  #  time for the image to fade in
+timeFadePara = timeFadeIn * 60  # the parameter to divided with
+
+timeStartOne = 0.0  # the starting time for the first picture to emerge
+
+timeBuffering = 3  # Time for blank screen between each condition, set constant buffering for convenience
+
+
+
+#====slider parameters(unit: height)====
+
+
+
+
+
+# speed of the marker movement (sensitivity)
+
+sliderSpeed = 0.01
+
+
+# start and end points of slider
+# note: if want multiple ticks, need to modify the script in initialization section
+
+sliderLeftP = 0  # left end
+sliderRightP = 1  #right end
+
+sliderStartP = (sliderRightP + sliderLeftP)*0.5 # the initial position (any number between start and end)
+
+
+# text to display at start and end of slider
+
+sliderLeftT = "NO"
+sliderRightT = "YES"
+
 
 # Used to detect whether we reached the timeConfidence
 
 timerRecord = core.CountdownTimer()
 
 
-# =====================================Own clock for record end=====================================
+
+
+
+# ====================================Some newly defined parameters end====================================
+
+
+
+
+
 
 
 
@@ -364,8 +353,10 @@ slider = visual.Slider(win=win, name='slider',
     
 #  change to desired style, using the in-built visual stimulus from psychopy
     
+    
+    
 slider.marker = Circle(win, 
-                        radius = slider.size[0]*0.5, 
+                        radius = slider.size[0]*0.5,  # The radius should be half the width 
                         edges = 32, 
                         fillColor = 'gray', 
                         lineColor = 'gray')
@@ -373,10 +364,12 @@ slider.marker = Circle(win,
 slider.line = Rect(win, units=slider.units,
                         pos=slider.pos,
                         width=slider.size[0],
-                        height=slider.size[1]+0.005,
+                        height=slider.size[1]+0.005,  # +0.005 just to make the rectangule looks better
                         lineColor='black', 
                         fillColor = 'black',
                         autoLog=False)
+    
+    
     
 text1 = visual.TextStim(win=win, name='text1',
     text='default text',
@@ -432,14 +425,12 @@ image3 = visual.ImageStim(
 
 
 
-#  Create some handy timers
-#  This clock is not used, but if wanted can record the entire timeline, need to be careful about the timeBuffering though
-globalClock = core.Clock()  # to track the time since experiment started
-TrialsClock = core.Clock()
+
+
 # instructionclock also later re-used for goodbye message
 InstructionClock = core.Clock()
-
-
+#  Create some handy timers
+TrialsClock = core.Clock()
 
 
 
@@ -574,21 +565,6 @@ for thisRepeat in Repeat:
     
     
     
-    
-    # ==========================================clock and list for record slider start=====================================================
-    
-    
-    
-    
-    timerRecord.reset(t=timeConfidence)
-    
-    sliderHistorySecond = [] # store here the rating and the time at point wanted
-    
-    
-    # ==========================================clock and list for record slider end=====================================================
-
-    
-    
     # update component parameters for each repeat
     slider.reset()
     text1.setText(txt_1)
@@ -629,10 +605,9 @@ for thisRepeat in Repeat:
         initiateComponent(thisComponent)  # function wrote by me, set the values to None
     
     
-    
-    
-    win.recordFrameIntervals = True
-    win.refreshThreshold = 1/60 + 0.004
+    # start recording the frame drops
+    win.recordFrameIntervals = True  # start recording only when the trial goes into the crucial part
+    win.refreshThreshold = 1/60 + 0.004  # threshold = 0.004s, so that every frame presented more than (1/refreshRate +0.004) will be warned
     logging.console.setLevel(logging.WARNING)
     
     
@@ -641,8 +616,13 @@ for thisRepeat in Repeat:
     
     t = 0
     TrialsClock.reset()  # clock of the trial
+    timerRecord.reset(t=timeConfidence)
+    
     frameN = -1
     continueRoutine = True
+    
+    sliderHistorySecond = [] # store here the rating and the time at point wanted
+
     
     
     
@@ -695,7 +675,7 @@ for thisRepeat in Repeat:
         
         
         
-        if timerRecord.getTime() <= 0:
+        if timerRecord.getTime() <= 0:  # timerRecord is a count-down timer, with parameter "timeConfidence"
             
             
             
@@ -714,14 +694,14 @@ for thisRepeat in Repeat:
                 # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
                
                
-            if entering == 2:  # when we enter here for the second time
-                
-                
-                command += "\nslider.readOnly = True"  # set slider to read only for the third picture
-                command += "\nkeyRecord = trialKeyboard.getKeys(['up','down'])"#  get the keys here
-                
-                # notice: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
-                # notice:  modified to match the verticle rating using "up" and "down"
+                if entering == 2:  # when we enter here for the second time
+                    
+                    
+                    command += "\nslider.readOnly = True"  # set slider to read only for the third picture
+                    command += "\nkeyRecord = trialKeyboard.getKeys(['up','down'])"#  get the keys here
+                    
+                    # notice: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
+                    # notice: modified to match the verticle rating using "up" and "down"
                 
             if entering == 3:
                 
@@ -730,7 +710,7 @@ for thisRepeat in Repeat:
                 
             exec(command)
             
-            timerRecord.reset(t = timeConfidence)  # reset the clock at the end s.t can count again
+            timerRecord.reset(t = timeConfidence)  # reset the clock at the end s.t can count down again
             
         
         
@@ -819,6 +799,9 @@ for thisRepeat in Repeat:
             thisComponent.setAutoDraw(False)
             
             
+            # notice: it's frame here
+            # what unit to save?
+            
     Repeat.addData('slider.startedFrame', slider.tStartRefresh)
     Repeat.addData('slider.stoppedFrame', slider.tStopRefresh)
     Repeat.addData('text1.startedFrame', text1.tStartRefresh)
@@ -857,7 +840,7 @@ for thisRepeat in Repeat:
     # ==========================================Added custom data end=====================================================
     
     
-    win.recordFrameIntervals = False
+    win.recordFrameIntervals = False  # close recording the frame
     print("Overall, %i frames were dropped." % win.nDroppedFrames)
     
     
@@ -876,6 +859,7 @@ for thisRepeat in Repeat:
 # these shouldn't be strictly necessary (should auto-save)
 thisExp.saveAsWideText(filename+'.csv')
 thisExp.saveAsPickle(filename)
+win.saveFrameIntervals(fileName = "allFrameTimes.txt", clear = True)
 logging.flush()
 
 
