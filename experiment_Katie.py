@@ -3,8 +3,6 @@
 
 
 """
-This experiment was created using PsychoPy3 Experiment Builder (v3.1.2),
-    on June 17, 2019, at 13:56
 If you publish work using this script please cite the PsychoPy publications:
     Peirce, JW (2007) PsychoPy - Psychophysics software in Python.
         Journal of Neuroscience Methods, 162(1-2), 8-13.
