@@ -689,8 +689,10 @@ for thisRepeat in Repeat:
                  
                  
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
-                sliderHistorySecond.append([slider.getRating(), (TrialsClock.getTime()-timeConfidence)])  # record rating and the time of decision, append it to the list
+                command += "\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here
+                #  Note: getKeys get the respond starting from the last call of getKeys
                 
+                sliderHistorySecond.append([slider.getRating(), (TrialsClock.getTime()-timeConfidence)])  # record rating and the time of decision, append it to the list
                 # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
                
                
@@ -698,10 +700,11 @@ for thisRepeat in Repeat:
                     
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
-                    command += "\nkeyRecord = trialKeyboard.getKeys(['up','down'])"#  get the keys here
                     
-                    # notice: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
-                    # notice: modified to match the verticle rating using "up" and "down"
+                    
+                    
+                    # Note: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
+                    # Note: modified to match the verticle rating using "up" and "down"
                 
             if entering == 3:
                 
@@ -799,23 +802,22 @@ for thisRepeat in Repeat:
             thisComponent.setAutoDraw(False)
             
             
-            # notice: it's frame here
-            # what unit to save?
+    
             
-    Repeat.addData('slider.startedFrame', slider.tStartRefresh)
-    Repeat.addData('slider.stoppedFrame', slider.tStopRefresh)
-    Repeat.addData('text1.startedFrame', text1.tStartRefresh)
-    Repeat.addData('text1.stoppedFrame', text1.tStopRefresh)
-    Repeat.addData('text2.startedFrame', text2.tStartRefresh)
-    Repeat.addData('text2.stoppedFrame', text2.tStopRefresh)
-    Repeat.addData('text3.startedFrame', text3.tStartRefresh)
-    Repeat.addData('text3.stoppedFrame', text3.tStopRefresh)
-    Repeat.addData('image1.startedFrame', image1.tStartRefresh)
-    Repeat.addData('image1.stoppedFrame', image1.tStopRefresh)
-    Repeat.addData('image2.startedFrame', image2.tStartRefresh)
-    Repeat.addData('image2.stoppedFrame', image2.tStopRefresh)
-    Repeat.addData('image3.startedFrame', image3.tStartRefresh)
-    Repeat.addData('image3.stoppedFrame', image3.tStopRefresh)
+    Repeat.addData('slider.started', slider.tStart)
+    Repeat.addData('slider.stopped', slider.tStop)
+    Repeat.addData('text1.started', text1.tStart)
+    Repeat.addData('text1.stopped', text1.tStop)
+    Repeat.addData('text2.started', text2.tStart)
+    Repeat.addData('text2.stopped', text2.tStop)
+    Repeat.addData('text3.started', text3.tStart)
+    Repeat.addData('text3.stopped', text3.tStop)
+    Repeat.addData('image1.started', image1.tStart)
+    Repeat.addData('image1.stopped', image1.tStop)
+    Repeat.addData('image2.started', image2.tStart)
+    Repeat.addData('image2.stopped', image2.tStop)
+    Repeat.addData('image3.started', image3.tStart)
+    Repeat.addData('image3.stopped', image3.tStop)
     
     
     
@@ -825,15 +827,23 @@ for thisRepeat in Repeat:
     
     
     
+    addKeys1 = []
+    addKeys2 = []
     
     
-    addKeys = []
-    for k in keyRecord:
-        addKeys.append([k.name, k.rt, k.duration])
+    
+    for k in keyRecord1:
+        addKeys1.append([k.name, k.rt, k.duration])
+        
+    for k in keyRecord2:
+        addKeys2.append([k.name, k.rt, k.duration])
+    
     
     
     Repeat.addData("slider.history_rating_timePoint", sliderHistorySecond)   # the slider rating and time, no movement for confidence time
-    Repeat.addData("keyboard.record_name_rt_duration", addKeys)  #the entire keyboard record
+    Repeat.addData("keyboard.record_name_rt_duration_img1", addKeys1)  #record for img 1
+    Repeat.addData("keyboard.record_name_rt_duration_img2", addKeys2)
+    
     
     
     
