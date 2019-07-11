@@ -613,6 +613,7 @@ for thisRepeat in Repeat:
     
     core.wait(timeBuffering)  #blank screen for time buffering
     
+    hasRespond = False  # check if the participant has responded or not
     
     t = 0
     TrialsClock.reset()  # clock of the trial
@@ -675,18 +676,18 @@ for thisRepeat in Repeat:
         
         
         
-        if timerRecord.getTime() <= 0:  # timerRecord is a count-down timer, with parameter "timeConfidence"
+        if timerRecord.getTime() <= 0 and hasRespond:  # timerRecord is a count-down timer, with parameter "timeConfidence"
             
             
             
             entering += 1  #implement by 1
-            command = None  #place holder
+            command = "pass"  #place holder
             
             
             
             if entering < 3:
                  
-                 
+                hasRespond = False
                  
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
                 command += "\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here
@@ -701,7 +702,7 @@ for thisRepeat in Repeat:
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
                     
-                    
+                    hasRespond = True
                     
                     # Note: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
                     # Note: modified to match the verticle rating using "up" and "down"
@@ -727,11 +728,13 @@ for thisRepeat in Repeat:
                 newRat = slider.rating - sliderSpeed
                 slider.rating = newRat
                 timerRecord.reset(t = timeConfidence)
+                hasRespond = True
             
             if keyState[key.UP]:
                 newRat = slider.rating + sliderSpeed
                 slider.rating = newRat
                 timerRecord.reset (t = timeConfidence)
+                hasRespond = True
             
             
         
