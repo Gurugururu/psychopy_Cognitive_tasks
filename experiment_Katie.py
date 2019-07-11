@@ -611,16 +611,21 @@ for thisRepeat in Repeat:
     logging.console.setLevel(logging.WARNING)
     
     
+    
+    
     core.wait(timeBuffering)  #blank screen for time buffering
     
+    
+    
     hasRespond = False  # check if the participant has responded or not
+    continueRoutine = True
     
     t = 0
     TrialsClock.reset()  # clock of the trial
     timerRecord.reset(t=timeConfidence)
     
     frameN = -1
-    continueRoutine = True
+    
     
     sliderHistorySecond = [] # store here the rating and the time at point wanted
 
@@ -664,6 +669,28 @@ for thisRepeat in Repeat:
         
         
         
+        #  Movement and record updates
+        #  changed to down and up according since it's a verticle slider
+        #  only detect during the first two pictures
+        
+        if entering < 2 :
+            
+            #entering = 0,1
+            
+            if keyState[key.DOWN]:
+                newRat = slider.rating - sliderSpeed
+                slider.rating = newRat
+                timerRecord.reset(t = timeConfidence)
+                hasRespond = True
+            
+            if keyState[key.UP]:
+                newRat = slider.rating + sliderSpeed
+                slider.rating = newRat
+                timerRecord.reset (t = timeConfidence)
+                hasRespond = True
+                
+            
+            
         
         
         # see whether the decision is made, more specifically: 
@@ -683,7 +710,8 @@ for thisRepeat in Repeat:
             entering += 1  #implement by 1
             command = "pass"  #place holder
             
-            
+
+            #entering = 1, 2
             
             if entering < 3:
                  
@@ -697,19 +725,24 @@ for thisRepeat in Repeat:
                 # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
                
                
-                if entering == 2:  # when we enter here for the second time
+                if entering == 2: # after the end of the second image
                     
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
                     
-                    hasRespond = True
+                    hasRespond = True  # When we are at the second trial, set it True for the third entering
                     
                     # Note: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
-                    # Note: modified to match the verticle rating using "up" and "down"
-                
+                    
+            
+            #entering = 3
+            
             if entering == 3:
                 
                 command = "continueRoutine = False"  # stop the routine
+            
+            
+            
                 
                 
             exec(command)
@@ -719,24 +752,7 @@ for thisRepeat in Repeat:
         
         
         
-        #  Movement and record updates
-        #  changed to down and up according since it's a verticle slider
-        #  only detect during the first two pictures
-        
-        if entering <2 :
-            if keyState[key.DOWN]:
-                newRat = slider.rating - sliderSpeed
-                slider.rating = newRat
-                timerRecord.reset(t = timeConfidence)
-                hasRespond = True
-            
-            if keyState[key.UP]:
-                newRat = slider.rating + sliderSpeed
-                slider.rating = newRat
-                timerRecord.reset (t = timeConfidence)
-                hasRespond = True
-            
-            
+
         
         
         
