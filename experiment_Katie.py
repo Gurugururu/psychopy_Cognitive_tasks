@@ -607,7 +607,7 @@ for thisRepeat in Repeat:
     
     # start recording the frame drops
     win.recordFrameIntervals = True  # start recording only when the trial goes into the crucial part
-    win.refreshThreshold = 1/60 + 0.004  # threshold = 0.004s, so that every frame presented more than (1/refreshRate +0.004) will be warned
+    win.refreshThreshold = frameDur + 0.004  # threshold = 0.004s, so that every frame presented more than (1/refreshRate +0.004) will be warned
     logging.console.setLevel(logging.WARNING)
     
     
