@@ -846,16 +846,19 @@ for thisRepeat in Repeat:
     
     
     
+    
+    # place holder
     addKeys1 = []
     addKeys2 = []
     
     
     
+    # reaction time = time of the key - tStart of the figure
     for k in keyRecord1:
-        addKeys1.append([k.name, k.rt, k.duration])
+        addKeys1.append([k.name, k.rt-image1.tStart, k.duration])
         
     for k in keyRecord2:
-        addKeys2.append([k.name, k.rt, k.duration])
+        addKeys2.append([k.name, k.rt-image2.tStart, k.duration])
     
     
     
