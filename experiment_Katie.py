@@ -591,7 +591,7 @@ for thisRepeat in Repeat:
     core.wait(timeBuffering)  #blank screen for time buffering
     
     
-    hasRespond = False  # check if the participant has responded or not
+    #hasRespond = False  # check if the participant has responded or not
     continueRoutine = True  # check if continue routine or not
     
     frameN = -1
@@ -705,8 +705,8 @@ for thisRepeat in Repeat:
         
         
         
-        if countDown.getTime() <= 0 and hasRespond:  # countDown is a count-down timer, with parameter "timeConfidence"
-            
+        #if countDown.getTime() <= 0 and hasRespond:  # countDown is a count-down timer, with parameter "timeConfidence"
+        if countDown.getTime() <= 0:  # countDown is a count-down timer, with parameter "timeConfidence"
             
             
                  
@@ -720,7 +720,7 @@ for thisRepeat in Repeat:
             if entering < 3:
                 
                 
-                hasRespond = False  # flip it back to false
+                #hasRespond = False  # flip it back to false
                  
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
                 command +="\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here (getKeys get the respond starting from the last call of getKeys)
@@ -731,7 +731,7 @@ for thisRepeat in Repeat:
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
                     
-                    hasRespond = True  # When we are at the second image, set it True for the third image
+                    #hasRespond = True  # When we are at the second image, set it True for the third image
                     
                     
                     
