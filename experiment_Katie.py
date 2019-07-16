@@ -280,11 +280,6 @@ sliderLeftT = "NO"
 sliderRightT = "YES"
 
 
-# Used to detect whether we reached the timeConfidence
-
-timerRecord = core.CountdownTimer()
-
-
 
 
 
@@ -427,9 +422,6 @@ image3 = visual.ImageStim(
 
 # instructionclock also later re-used for goodbye message
 InstructionClock = core.Clock()
-#  Create some handy timers
-TrialsClock = core.Clock()
-
 
 
 
@@ -542,6 +534,8 @@ if thisRepeat != None:
 for thisRepeat in Repeat:
 
     
+    event.clearEvents(eventType='keyboard')
+    
     currentLoop = Repeat
     # abbreviate parameter names if possible (e.g. rgb = thisRepeat.rgb)
     if thisRepeat != None:
@@ -574,13 +568,9 @@ for thisRepeat in Repeat:
     
     
     
-    # ==========================================entering start=====================================================
     
-    entering = 0  # for each repeat, entering start from 0, therefore need to be initialized outside of the loop
     
-    #core.wait(timeBuffering) # will be blank screen after end for the time required
     
-    # ==========================================entering end=====================================================
     
     
     
@@ -589,44 +579,44 @@ for thisRepeat in Repeat:
     
     
     
-
-    # create a keyboard to record all the keys pressed during one repeat
-    trialKeyboard = keyboard.Keyboard()
+    sliderHistorySecond = [] # store here the rating and the time at point wanted
     
-    
-    
-    
-    # keep track of which components have finished
-    TrialsComponents = [slider, text1, text2, text3, image1, image2, image3]
+    TrialsComponents = [slider, text1, text2, text3, image1, image2, image3] # keep track of which components have finished
     
     for thisComponent in TrialsComponents:
-        initiateComponent(thisComponent)  # function wrote by me, set the values to None
+        initiateComponent(thisComponent)  # set the values to None
     
-    
-    # start recording the frame drops
-    win.recordFrameIntervals = True  # start recording only when the trial goes into the crucial part
-    win.refreshThreshold = frameDur + 0.004  # threshold = 0.004s, so that every frame presented more than (1/refreshRate +0.004) will be warned
-    logging.console.setLevel(logging.WARNING)
-    
-    
-    
+
     
     core.wait(timeBuffering)  #blank screen for time buffering
     
     
-    
     hasRespond = False  # check if the participant has responded or not
-    continueRoutine = True
-    
-    t = 0
-    TrialsClock.reset()  # clock of the trial
-    timerRecord.reset(t=timeConfidence)
+    continueRoutine = True  # check if continue routine or not
     
     frameN = -1
+    t = 0
+    entering = 0  # for each repeat, entering start from 0, therefore need to be initialized outside of the loop
     
     
-    sliderHistorySecond = [] # store here the rating and the time at point wanted
-
+    # initialize some clocks
+    TrialsClock = core.Clock()  #  Create some handy timers
+    countDown = core.CountdownTimer()   # Used to detect whether we reached the timeConfidence
+    
+    
+    # create a keyboard to record all the keys pressed during one repeat
+    trialKeyboard = keyboard.Keyboard()
+    
+    
+    event.clearEvents()  # clean up buffer before entering to the loop (not sure why it couldn't remove the keys with negative reaction time, and this is why I added getKeys() to remove)
+    trialKeyboard.getKeys()  # to remove the keys that was pressed during the buffering periods, or we will get negative reaction time for those keys
+    
+    
+    # reset the clocks to starting time
+    TrialsClock.reset()  # clock of the trial
+    countDown.reset(t=timeConfidence)  # clock for timeConfidence
+    
+    
     
     
     
@@ -637,7 +627,10 @@ for thisRepeat in Repeat:
         
         t = TrialsClock.getTime()  # current time
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-        
+
+    
+    
+    
         
         if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:# Fixate the mouse
             myMouse.setPos(newPos = (1,1))
@@ -645,16 +638,41 @@ for thisRepeat in Repeat:
             # notice: I added this step because on my computer the setVisible of mouse event didn't work
             # may be due to the mouse initialization in the slider class
             # Therefore I just fixiated it s.t. it won't be used
-    
-    
+            
+            
+            
+            
         # update/draw components on each frame
         
         
-        # ====================================Modify slider start====================================
+        
+        #---------------#
+        #---------------#
+        #-slider-update-#
+        #---------------#
+        #---------------#
         
         
+        #  Movement and record updates
+        #  changed to DOWN and UP according since it's a verticle slider
+        #  only detect during the first two pictures
         
-        
+        if entering < 2 :
+            
+            
+            if keyState[key.DOWN]:
+                newRat = slider.rating - sliderSpeed
+                slider.rating = newRat
+                countDown.reset(t = timeConfidence)
+                hasRespond = True
+            
+            if keyState[key.UP]:
+                newRat = slider.rating + sliderSpeed
+                slider.rating = newRat
+                countDown.reset (t = timeConfidence)
+                hasRespond = True
+                
+            
         if t >= timeStartOne:
         
             #record starting position, starting slider
@@ -667,43 +685,31 @@ for thisRepeat in Repeat:
         
         
         
-        #  Movement and record updates
-        #  changed to down and up according since it's a verticle slider
-        #  only detect during the first two pictures
         
-        if entering < 2 :
-            
-            #entering = 0,1
-            
-            if keyState[key.DOWN]:
-                newRat = slider.rating - sliderSpeed
-                slider.rating = newRat
-                timerRecord.reset(t = timeConfidence)
-                hasRespond = True
-            
-            if keyState[key.UP]:
-                newRat = slider.rating + sliderSpeed
-                slider.rating = newRat
-                timerRecord.reset (t = timeConfidence)
-                hasRespond = True
-                
-            
-            
+        #-------------------------#
+        #-------------------------#
+        #-switch-between-pictures-#
+        #-------------------------#
+        #-------------------------#
         
         
-        # see whether the decision is made, more specifically: 
-        #    when non of the keys are pressed for the confidence time, record the rating, redo clock
-        #    add count for entering this, set the True/False value accordingly for image and text
-                
+        #    see whether the decision is made, more specifically: 
+        #       Not entering unles the participant has responded
+        #       when non of the keys are pressed for the confidence time, record the rating, redo clock
+        #       add count for entering this, set the True/False value accordingly for image and text
+        #       note that when setAutoDraw = True, status changes to STARTED automatically
+        
         #    when entering = 1, image1 & txt1 finished, image2 & txt2 starts
         #    when entering = 2, image2 & txt2 finished, image3 & txt3 starts, and set the slider to read-only
         #    when entering = 3, image3 & txt3 finished, stop the entire trial
         
         
         
-        if timerRecord.getTime() <= 0 and hasRespond:  # timerRecord is a count-down timer, with parameter "timeConfidence"
+        if countDown.getTime() <= 0 and hasRespond:  # countDown is a count-down timer, with parameter "timeConfidence"
             
             
+            
+                 
             
             entering += 1  #implement by 1
             command = "pass"  #place holder
@@ -712,65 +718,69 @@ for thisRepeat in Repeat:
             #entering = 1, 2
             
             if entering < 3:
-                 
-                hasRespond = False
+                
+                
+                hasRespond = False  # flip it back to false
                  
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
-                command += "\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here
-                #  Note: getKeys get the respond starting from the last call of getKeys
+                command +="\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here (getKeys get the respond starting from the last call of getKeys)
                 
-                sliderHistorySecond.append([slider.getRating(), (TrialsClock.getTime()-timeConfidence)])  # record rating and the time of decision, append it to the list
-                # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
-               
-               
+                
                 if entering == 2: # after the end of the second image
                     
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
                     
-                    hasRespond = True  # When we are at the second trial, set it True for the third entering
+                    hasRespond = True  # When we are at the second image, set it True for the third image
+                    
+                    
                     
                     # Note: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
                     
+                    
+                exec(command)
+                exec("tmp = image{}.tStart".format(str(entering)))
+                
+                
+                sliderHistorySecond.append([slider.getRating(), (t-timeConfidence-tmp)])  # record rating and the time of decision, append it to the list
+                # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
+               
+                
             
             #entering = 3
             
             if entering == 3:
                 
-                command = "continueRoutine = False"  # stop the routine
-            
-            
-            
+                continueRoutine = False  # stop the routine
                 
-                
-            exec(command)
             
-            timerRecord.reset(t = timeConfidence)  # reset the clock at the end s.t can count down again
             
+            countDown.reset(t = timeConfidence)  # reset the clock at the end s.t can count down again
+            
+            
+            
+            
+            
+            
+        #------------------------#
+        #------------------------#
+        #-image-and-text-updates-#
+        #------------------------#
+        #------------------------#
         
         
-        
-
-        
-        
-        
-        
-        # ====================================Modify slider end====================================
-        
-        
-
-        
+        # Notice that this can't be moved before the switching, because
         
         
         # text1 + image 1 updates after the "timeStartedOne"
         if t >= timeStartOne:
             
-            componentUpdate(text1, t,frameN, True)
+            componentUpdate(text1, t, frameN, True)
             componentUpdate(image1, t, frameN, True)
             
             
-
-        #update opacity of img1
+            
+        # update opacity of img1
         imgFadeIn(image1, frameN, timeFadePara)
         
         
@@ -794,6 +804,15 @@ for thisRepeat in Repeat:
         
         
         
+        #--------------------------------#
+        #--------------------------------#
+        #----check-special-conditions----#
+        #--------------------------------#
+        #--------------------------------#
+        
+        
+        
+        
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
             core.quit()
@@ -810,17 +829,20 @@ for thisRepeat in Repeat:
     
     
     
-    # end this condition, save data
+    #---------------------------#
+    #---------------------------#
+    #-----end-and-save-data-----#
+    #---------------------------#
+    #---------------------------#
     
     
     # -------Ending Routine "Trials"-------
     for thisComponent in TrialsComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-            
-            
     
-            
+    
+    
     Repeat.addData('slider.started', slider.tStart)
     Repeat.addData('slider.stopped', slider.tStop)
     Repeat.addData('text1.started', text1.tStart)
@@ -838,20 +860,13 @@ for thisRepeat in Repeat:
     
     
     
-    
-    # ==========================================Added custom data start=====================================================
-    
-    
-    
-    
-    
     # place holder
     addKeys1 = []
     addKeys2 = []
     
     
-    
     # reaction time = time of the key - tStart of the figure
+    
     for k in keyRecord1:
         addKeys1.append([k.name, k.rt-image1.tStart, k.duration])
         
@@ -867,18 +882,9 @@ for thisRepeat in Repeat:
     
     
     
-    # ==========================================Added custom data end=====================================================
-    
-    
-    win.recordFrameIntervals = False  # close recording the frame
-    print("Overall, %i frames were dropped." % win.nDroppedFrames)
     
     
     win.flip()
-    
-
-    
-    
     thisExp.nextEntry()
     
     
