@@ -93,14 +93,14 @@ sliderSP1 = 0 # each statement should be on the top of the slider
 # calculate to make sure they are evenly spread
 # height/2+distance = the distance between each identical component
 
-dis = 0.045
+dis = 0.047
 
 stateD = stateH/2 + dis
 sliderD = sliderH/2 + dis*2
 sliderSD = sliderSH/2 + dis*2
 
 
-timeBetween = 0  # time between each trial
+timeBetween = 2  # time between each trial
 
 
 
@@ -147,6 +147,8 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 
 
 
+conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  # a list object, save the path(including the name) of the file selected, conditionFile[0] gives the file name string
+    
 
 
 
@@ -181,7 +183,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 win = visual.Window(
     size=(1920, 1080), fullscr=True, screen=0, 
     winType='pyglet', allowGUI=False, allowStencil=False,
-    monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
+    monitor='testMonitor', color="lightGray", colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
 # store frame rate of monitor if we can measure it
@@ -198,111 +200,126 @@ else:
 defaultKeyboard = keyboard.Keyboard()
 
 
+# create a default mouse
+
+defaultMouse = event.Mouse(win=win, visible=True)
+
+
+
+
+
+introClock = core.Clock()
+trialClock = core.Clock()
+goodbye_Clock = core.Clock()
+
+
 
 
 # Initialize components for Routine "intro"
-introClock = core.Clock()
 
 introText = visual.TextStim(win=win, name='introText',
     text='Instructions, press space to continue',
     font='Arial',
     pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=0.0);
 
 # Initialize components for Routine "trial"
 
-trialClock = core.Clock()
 
-
-#Statements
+#-----Statements-----
 statement1 = visual.TextStim(win=win, name='statement1',
     text='default text',
     font='Arial',
     pos=(0, stateP1), height=stateH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=0.0);
 statement2 = visual.TextStim(win=win, name='statement2',
     text='default text',
     font='Arial',
     pos=(0, stateP1-stateD), height=stateH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-1.0);
 statement3 = visual.TextStim(win=win, name='statement3',
     text='default text',
     font='Arial',
     pos=(0, stateP1-stateD*2), height=stateH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-2.0);
     
     
-#sliders
+#-----sliders-----
 slider1 = visual.Slider(win=win, name='slider1',
     size=(1.4, sliderH), pos=(0, sliderP1),
     ticks=(startP, endP),labels=(startT, endT),
     granularity=0, style=['rating'],
-    color='LightGray', font='HelveticaBold',
+    color='DarkGray', font='HelveticaBold',
     flip=False)
 slider2 = visual.Slider(win=win, name='slider2',
     size=(1.4, sliderH), pos=(0, sliderP1-sliderD),
     ticks=(startP, endP), labels=(startT, endT),
     granularity=0, style=['rating'],
-    color='LightGray', font='HelveticaBold',
+    color='DarkGray', font='HelveticaBold',
     flip=False)
 slider3 = visual.Slider(win=win, name='slider3',
     size=(1.4,sliderH), pos=(0, sliderP1-sliderD*2),
     ticks=(startP, endP), labels=(startT, endT),
     granularity=0, style=['rating'],
-    color='LightGray', font='HelveticaBold',
+    color='DarkGray', font='HelveticaBold',
     flip=False)
 slider4 = visual.Slider(win=win, name='slider4',
     size=(1.4, sliderH), pos=(0, sliderP1-sliderD*3),
     ticks=(startP, endP), labels=(startT, endT),
     granularity=0, style=['rating'],
-    color='LightGray', font='HelveticaBold',
+    color='DarkGray', font='HelveticaBold',
     flip=False)
     
     
 sliderComponents = [slider1, slider2, slider3,slider4]
 
-# slider texts
+for thisSlider in sliderComponents:
+    thisSlider.marker.fillColor, thisSlider.marker.lineColor = "black", "black"
+    #thisSlider.marker.lineColor = "black"
+
+#-----slider-statements-----
 sliderS1 = visual.TextStim(win=win, name='sliderS1',
     text='default text', 
     font='Arial',
     pos=(stateX, sliderSP1), height=sliderSH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-7.0);
 sliderS2 = visual.TextStim(win=win, name='sliderS2',
     text='default text',
     font='Arial',
     pos=(stateX, sliderSP1-sliderSD), height=sliderSH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-8.0);
 sliderS3 = visual.TextStim(win=win, name='sliderS3',
     text='default text',
     font='Arial',
     pos=(stateX, sliderSP1-sliderSD*2), height=sliderSH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-9.0);
 sliderS4 = visual.TextStim(win=win, name='sliderS4',
     text='default text',
     font='Arial',
     pos=(stateX, sliderSP1-sliderSD*3), height=sliderSH, wrapWidth=None, ori=0, 
-    color='white', colorSpace='rgb', opacity=1, 
+    color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=-10.0);
 
 
 
 # Initialize components for Routine "goodbye_"
-goodbye_Clock = core.Clock()
+
+
 goodbyeText = visual.TextStim(win=win, name='goodbyeText',
     text='Thank you for participating, press space to quit.',
     font='Arial',
@@ -318,14 +335,10 @@ nextButton = visual.Rect(win, name="nextButton",
                     width=0.1, height =0.05, pos=(0,-0.45))
 nextButton.setFillColor("white")
 
-
 nextText = visual.TextStim(win, text="NEXT", 
                 pos=(0,-0.45), color="black", height=0.03)
 
 
-#initialize mouse
-
-defaultMouse = event.Mouse(win=win, visible=True)
 
 
 
@@ -351,6 +364,8 @@ initiateComponent(introText)
 
 #indicate whether participant has moved any of the sliders
 hasRespond = False
+
+
 
 # -------Start Routine "Instruction"-------
 while True:
@@ -402,7 +417,7 @@ win.flip()  # get a blank screen
 # set up handler to look after randomisation of conditions etc
 trials = data.TrialHandler(nReps=1, method='sequential', 
     extraInfo=expInfo, originPath=-1,
-    trialList=data.importConditions('interpretationTaskConditions.csv'),
+    trialList=data.importConditions(conditionFile[0]),
     seed=None, name='trials')
 thisExp.addLoop(trials)  # add the loop to the experiment
 thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -411,6 +426,9 @@ thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
 if thisTrial != None:
     for paramName in thisTrial:
         exec('{} = thisTrial[paramName]'.format(paramName))
+
+
+
 
 for thisTrial in trials:
     currentLoop = trials
@@ -426,7 +444,11 @@ for thisTrial in trials:
     continueRoutine = True
     
     
-    entering = 0
+    startSecond = False
+    startThird = False
+    hasRecord1 = False
+    hasRecord2 = False
+    hasRecord3 = False
     
 
     
@@ -456,7 +478,7 @@ for thisTrial in trials:
         initiateComponent(thisComponent)
         
     for thisSlider in sliderComponents:
-        thisSlider.recordRating(0)
+        thisSlider.recordRating(startP)
     
     
     
@@ -465,25 +487,51 @@ for thisTrial in trials:
     sliderRecord2 = [] # second
     sliderRecord3 = [] # third
     
+
     
-    
-    
+
     
     
     # -------Start Routine "trial"-------
     while continueRoutine:
+
+        
+        while not defaultMouse.isPressedIn(nextButton, buttons=[0]):   # do this until we click on the button
         # get current time
-        t = trialClock.getTime()
-        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+            t = trialClock.getTime()
+            frameN = frameN + 1 
+             # number of completed frames (so 0 is the first frame)
+        
+        
         # update/draw components on each frame
         
         
         
-        exec("hasRespond = checkSlider(sliderComponents, sliderRecord{})".format(entering))
+            
+            # --------------------Updates--------------------
+            # componentUpdate updates the time and frameN of the component, and set it to autoDraw could have used single "draw" statement to save resources and time
+            # use the function ust in case it's demanded
+            
+            
+            
+            
+            # --------------------Statements-update--------------------
+            
+            componentUpdate(statement1, t, frameN)
+               
+                     
+            if startSecond:
+                componentUpdate(statement2, t, frameN)
+                
+            if startThird:
+                # keep track of stop time/frame for later
+                componentUpdate(statement3, t, frameN)
         
-        # --------------------Updates--------------------
         
-        if t >= 0.0:
+            
+            # --------------------button--------------------
+            componentUpdate(nextButton, t, frameN)
+            componentUpdate(nextText, t, frameN)
             
             
             # --------------------Sliders--------------------
@@ -502,56 +550,60 @@ for thisTrial in trials:
             componentUpdate(sliderS3, t, frameN)
             componentUpdate(sliderS4, t, frameN)
             
-             # --------------------Statement1-update--------------------
-            # *statement1* updates
-            # keep track of start time/frame for later
-            componentUpdate(statement1, t, frameN)
-            nextButton.setAutoDraw(True)
-            nextText.setAutoDraw(True)
+
+
             
-            
-            
-        if statement1.status == STARTED:
-            # keep track of stop time/frame for later
-            componentUpdate(statement1, t, frameN)
-        if statement2.status == STARTED:
-            # keep track of stop time/frame for later
-            componentUpdate(statement2, t, frameN)
-        if statement3.status == STARTED:
-            # keep track of stop time/frame for later
-            componentUpdate(statement3, t, frameN)
+            #event.clearEvents(eventType = "mouse")
         
-        
-        
-        if hasRespond and defaultMouse.isPressedIn(nextButton, buttons=[0]) :
+            #---------------check for special keys and conditions---------------
             
-            entering += 1
+
+
+            # check for quit (typically the Esc key)
+            if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+                core.quit()
+                
+            # check if all components have finished
+            if not continueRoutine:  # a component has requested a forced-end of Routine
+                break
+            if continueRoutine:
+                win.flip()
+                
+                
+
+        hasRespond = checkSlider(sliderComponents, sliderRecord0) # will stay True if ther is any response
+        
+        # after the clicking on the button
+        
+        if hasRespond: # for the first respond, we force the participant to make a response
             
-            # *statement2* updates
-            if statement2.status == NOT_STARTED:
+            if not hasRecord1 and statement2.status == NOT_STARTED and statement3.status == NOT_STARTED:
                 for thisSlider in sliderComponents:
                     sliderRecord1.append(thisSlider.getRating()) # record current rating
-        
-                componentUpdate(statement2, t, frameN) # This will start the statement2
+                        
+                startSecond = True # used in drawing the second component
+                hasRecord1 = True
                 
-            # *statement3* updates
-            elif statement2.status == STARTED and statement3.status == NOT_STARTED:
+                
+                
+                
+                
+            
+        if not hasRecord2 and statement2.status == STARTED and statement3.status == NOT_STARTED:
 
-                for thisSlider in sliderComponents:
-                    sliderRecord2.append(thisSlider.getRating()) # record current rating
+            for thisSlider in sliderComponents:
+                sliderRecord2.append(thisSlider.getRating()) # record current rating 
+           
+            startThird = True # used in drawing the third component
+            hasRecord2 = True
+
+        if not hasRecord3 and statement2.status == STARTED and statement3.status == STARTED:
+            
+            for thisSlider in sliderComponents:
+                sliderRecord3.append(thisSlider.getRating()) # record current rating
                 
-                componentUpdate(statement3, t, frameN) # this will start the statement3
-                
-        
-            else:
-                
-                for thisSlider in sliderComponents:
-                    sliderRecord3.append(thisSlider.getRating()) # record current rating
-                    
-                continueRoutine = False # end the trial
-                
-                
-                
+            hasRecord3 = True
+            continueRoutine = False # end the trial after the third statement is rated
         
         
         
@@ -567,23 +619,6 @@ for thisTrial in trials:
         if not continueRoutine:  # a component has requested a forced-end of Routine
             break
             
-        # refresh the screen
-        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
-            win.flip()
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
             
             
     
@@ -596,7 +631,8 @@ for thisTrial in trials:
     trials.addData('statement3_rating', sliderRecord3)
 
 
-    core.wait(timeBetween)
+    win.flip()  # clear the screen 
+    core.wait(timeBetween)  # wait for some time between tria
 
     thisExp.nextEntry()
     
@@ -683,8 +719,13 @@ while True:
     win.flip()
     
     
-       
-
+    
+    
+    
+    
+    
+    
+    
 # -------Ending Routine "goodbye_"-------
 goodbyeText.setAutoDraw(False)
 
