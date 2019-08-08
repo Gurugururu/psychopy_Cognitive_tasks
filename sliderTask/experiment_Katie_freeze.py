@@ -151,89 +151,6 @@ def initiateComponent(Component):
 
 
 
-
-
-
-# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
-filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
-
-
-
-
-
-# An ExperimentHandler isn't essential but helps with data saving
-thisExp = data.ExperimentHandler(name=expName, version='',
-    extraInfo=expInfo, runtimeInfo=None,
-    savePickle=True, saveWideText=True,
-    dataFileName=filename)
-    
-
-# save a log file for detail verbose info
-logFile = logging.LogFile(filename+'.log', level=logging.EXP)
-logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
-
-endExpNow = False  # flag for 'escape' or other condition => quit the exp
-
-
-
-
-
-
-
-
-#--------------------#
-#---initialization---#
-#--------------------#
-
-
-
-# Start Code - component code to be run before the window creation
-
-# Setup the Window
-win = visual.Window(
-    size=[1920, 1080], fullscr=True, screen=0, 
-    winType='pyglet', allowGUI=False, allowStencil=False,
-    monitor='testMonitor', color=[1.000,1.000,1.000], colorSpace='rgb',
-    blendMode='avg', useFBO=True, 
-    units='height')
-    
-
-
-    
-# ====================================Add pyglet window start====================================
-    
-
-# initialize pyglet trick
-
-keyState = key.KeyStateHandler()
-win.winHandle.push_handlers(keyState)
-
-
-# ====================================Add pyglet window end====================================
-    
-
-
-
-
-frameDur = None
-
-
-# store frame rate of monitor if we can measure it
-expInfo['frameRate'] = win.getActualFrameRate()
-if expInfo['frameRate'] != None:
-    frameDur = 1.0 / round(expInfo['frameRate'])
-else:
-    frameDur = 1.0 / 60.0  # could not measure, so guess
-
-
-
-
-# create a default keyboard (e.g. to check for escape)
-defaultKeyboard = keyboard.Keyboard()
-
-
-
-
 # ====================================Some newly defined parameters start====================================
 
 
@@ -293,6 +210,91 @@ sliderRightT = "100%"
 
 
 
+# Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
+filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
+
+
+
+
+
+# An ExperimentHandler isn't essential but helps with data saving
+thisExp = data.ExperimentHandler(name=expName, version='',
+    extraInfo=expInfo, runtimeInfo=None,
+    savePickle=True, saveWideText=True,
+    dataFileName=filename)
+    
+
+# save a log file for detail verbose info
+logFile = logging.LogFile(filename+'.log', level=logging.EXP)
+logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a file
+
+endExpNow = False  # flag for 'escape' or other condition => quit the exp
+
+
+
+
+
+
+
+
+#--------------------#
+#---initialization---#
+#--------------------#
+
+
+
+# Start Code - component code to be run before the window creation
+
+# Setup the Window
+win = visual.Window(
+    fullscr=True, screen=0, 
+    winType='pyglet', allowGUI=False, allowStencil=False,
+    monitor='testMonitor', color=[1.000,1.000,1.000], colorSpace='rgb',
+    blendMode='avg', useFBO=True, 
+    units='height')
+    
+
+
+    
+# ====================================Add pyglet window start====================================
+    
+
+# initialize pyglet trick
+# Some newer method is available (using key hardware), but this trick still works
+# not sure how to detect key press and release using keyboard hardware class
+
+keyState = key.KeyStateHandler()
+win.winHandle.push_handlers(keyState)
+
+
+# ====================================Add pyglet window end====================================
+    
+
+
+
+
+frameDur = None # place holder
+
+
+# store frame rate of monitor if we can measure it
+expInfo['frameRate'] = win.getActualFrameRate()
+if expInfo['frameRate'] != None:
+    frameDur = 1.0 / round(expInfo['frameRate'])
+else:
+    frameDur = 1.0 / 60.0  # could not measure, so guess
+
+
+
+
+# create a default keyboard (e.g. to check for escape)
+defaultKeyboard = keyboard.Keyboard()
+
+
+
+
+
+
+
 
 # ====================================Add mouse start====================================
 
@@ -341,9 +343,6 @@ slider = visual.Slider(win=win, name='slider',
     
     
 #  notice that the "size" of the slider controls whether the slider is verticle or horizontal
-    
-    
-    
 #  change to desired style, using the in-built visual stimulus from psychopy
     
     

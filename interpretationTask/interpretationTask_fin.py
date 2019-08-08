@@ -25,12 +25,17 @@ If you publish work using this script please cite the PsychoPy publications:
         
         
     #3. If you are sure about your path and want to avoid user interface popping up everytime:
-            # 1. comment out line203 to line207
-            # 2. change "conditionFile[0]" on line741 to your condition file path
+    
+            # 1) comment out these lines
+            
+                # conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  # a list object, save the path(including the name) of the file selected, conditionFile[0] gives the file name string
+                 # if not conditionFile:
+                #   core.quit
+            # 2) replace "conditionFile[0]" in "trialList=data.importConditions(conditionFile[0])," around line740 with your condition file path
                 # path is a string type
-                # remember to change "/" to "\\" in windows paths (sometimes error occurs)
+                # remember to replace "/" with "\\" in windows (sometimes error occurs)
                 
-    #4. If you want to read codes, in case of naming, there are six kinds of objects displayed in the task:
+    #4. If you want to read codes, in case of naming, there are six objects displayed in the task:
     
         # statements (3 of them, text objects)       -> state1 ~ state3
         # slider (4 of them, slider objects)         -> slider1 ~ slider4
@@ -39,7 +44,7 @@ If you publish work using this script please cite the PsychoPy publications:
         
         # a button (composed of 2 objects)           -> nextButton and nextText
         
-        # My namings of the variables will follow the rules semantically
+        # My namings of the variables will follow the rules semantically:
             # e.g. sliderH => slider height; sliderSH => slider subject height
             
         
@@ -250,7 +255,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
 # Setup the Window
 win = visual.Window(
-    size=(1920, 1080), fullscr=True, screen=0, 
+    fullscr=True, screen=0, 
     winType='pyglet', allowGUI=False, allowStencil=False,
     monitor='testMonitor', color="lightGray", colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -890,13 +895,11 @@ for thisTrial in trials:
             componentUpdate(sliderV3, t, frameN)
             componentUpdate(sliderV4, t, frameN)
 
-            sliderV1.setText("{r:1.1f}%".format(r=slider1.markerPos*100))
+            sliderV1.setText("{r:1.1f}%".format(r=slider1.markerPos*100)) # 1.1f means that the number is in 0.1 precision
             sliderV2.setText("{r:1.1f}%".format(r=slider2.markerPos*100))
             sliderV3.setText("{r:1.1f}%".format(r=slider3.markerPos*100))
             sliderV4.setText("{r:1.1f}%".format(r=slider4.markerPos*100))
             
-            #event.clearEvents(eventType = "mouse")
-        
             #---------------check for special keys and conditions---------------
             
 
@@ -933,7 +936,7 @@ for thisTrial in trials:
                 sliderRecord2.append(dicSlider[thisText].getRating()) # record current rating
                         
            
-            startThird = True # used in drawing the third component
+            startThird = True # used in starting the third component
             hasRecord2 = True
             nextText.setText("DONE")
 
