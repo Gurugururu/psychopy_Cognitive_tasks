@@ -16,11 +16,14 @@ If you publish work using this script please cite the PsychoPy publications:
 
     #1. **IMPORTANT** since the csv file contains french accents, when saving as csv file, you need to be carefule to select "UTF-8" type of csv, or error will happen
     
-    #2. **IMPORTANT** format note: the headers of the csv file need to contain the following:
+    #2. **IMPORTANT** format note: the header of the csv file must contain the following:
     
-        # ============================================================================================
-        # ||    state1    state2    state3    sliderSub1  sliderSub2    sliderSub3    sliderSub4    ||
-        # ============================================================================================
+        # ==============================================================================================
+        # ||    state1    state2    state3    sliderSub1    sliderSub2    sliderSub3    sliderSub4    ||
+        # ==============================================================================================
+        
+            # "state1"~"state3" are the three statements that will appear on the top of screen one-by-one
+            # "sliderSub1"~"sliderSub4" are the four questions that're on the sliders
         
         # the names are case-sensitive, and mustn't be other names
         # order doesn't matter
@@ -29,17 +32,21 @@ If you publish work using this script please cite the PsychoPy publications:
         
     #3. If you are certain about your path and want to avoid user interface popping up everytime:
     
-            # 1) around line 225, comment out these lines 
+            # 1) around line 220, comment out these lines 
             
                 # conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  
                  # if not conditionFile:
                 #   core.quit
-                
-            # 2) around line740, replace "conditionFile[0]" in "trialList=data.importConditions(conditionFile[0]),"  with your condition file path
+            
+            # 2.1) place "  conditionFile[0]=["YOUR_FILE_PATH"] " after the above commented lines
+            
+            # OR:
+            
+            # 2.2) around line733, replace "conditionFile[0]" in "trialList=data.importConditions(conditionFile[0]),"  with your condition file path
                 # path is a string type
                 # remember to replace "/" with "\\" in windows (sometimes error occurs)
                 
-    #4. If you want to read codes, in case of naming, there are 7 objects displayed in the task:
+    #4. If you want to read codes, in case of naming, there are these objects displayed:
     
         # statements (3 of them, text objects)              -> state1 ~ state3
         # slider (4 of them, slider objects)                -> slider1 ~ slider4
@@ -119,32 +126,32 @@ def checkSlider(sliders, originRatings):
 # ---------------------------------------------some-variables---------------------------------------------
 
 
-# ----physical properties (height and width of statements(state), sliders(slider) and slider statements(SliderS))----
+# --------------- physical properties ---------------
     
 
-# height of the components
+# ----- height of the components -----
 
 stateH = 0.03       # The height of the statement (text size)
 sliderH = 0.03      # The height of the slider 
 sliderW = 1.4       # The width of the slider
 sliderSH = 0.03     # The height of the slider subject (text size)
-sliderVH = 0.03     # The height of the slider values (text size)
+sliderVH = 0.02     # The height of the slider values (text size)
 
-# The x-position of the components
+# ----- The x-position of the components -----
 
-sliderX = -0.05                # The x-position of the sliders
-sliderSX = -0.05               # The x-position of the slidersubject
+sliderX = 0                   # The x-position of the sliders
+sliderSX = -0.05              # The x-position of the slidersubject
 sliderVX = sliderW/2 + 0.05   # The x-position of the values
 
 
-# the y-position of the first component (slider, statement, sliderSub)
+# ----- the y-position of the first component (slider, statement, sliderSub) -----
 
-stateP1 = 0.35      # The y-position of the first statment
-sliderP1 = -0.01    # The y-position of the first slider
+stateP1 = 0.35         # The y-position of the first statment
+sliderP1 = -0.01       # The y-position of the first slider
 sliderSP1 = 0.02       # each slider subject should be on the top of the slider (larger than sliderP1)
 sliderVP1 = sliderP1   # slider value has the same y-position as the slider
 
-# the distance between each component
+# ----- the distance between each component -----
     # calculate to make sure they are evenly spread
         # (when use them below in object initialization, use the multiple of *D values)
     # height/2 + distance =  about distance between each identical component, just an evaluation
@@ -156,22 +163,18 @@ dis = 0.048 # Change this to control the spread, or modify the function below if
 stateD = stateH/2 + dis
 sliderD = sliderH/2 + dis*2
 sliderSD = sliderSH/2 + dis*2
-sliderVD = sliderD # The distance between the values should be the same as the slider
+sliderVD = sliderD              # The distance between the values should be the same as the slider
 
 
-# position of the button
+# ----- position of the button -----
 
 buttonX = sliderX
 buttonY = -0.45
 
-# position of the box around statement
+# ----- position of the box around statement -----
 
 stateBoxX = 0
 stateBoxY = stateP1-stateD
-
-
-
-
 
 # -----Other-parameters-----
 
@@ -181,8 +184,6 @@ startP = 0       # starting value of all sliders
 endP = 1         # ending value of all sliders
 startT = "0%"    # text displayed at at the starting point of the slider
 endT = "100%"    # text displayed at the end of the slider
-
-
 
 timeBetween = 2      # time between each trial (unit: second)
 
@@ -196,25 +197,9 @@ instructionText =  """Trois énoncés vous seront montrés, un à la fois. Chacu
 #--------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
-
-
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
-
-
-
-
-
-
-
 
 
 # Store info about the experiment session
@@ -232,18 +217,11 @@ expInfo['psychopyVersion'] = psychopyVersion
 filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
 
 
-
-
 conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  # a list object, save the path(including the name) of the file selected, conditionFile[0] gives the file name string
  
 if not conditionFile:
     core.quit
     
-
-
-
-
-
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -258,19 +236,11 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
 
 
-
-
-
-
-
-
-
-
 # Start Code - component code to be run before the window creation
 
 # Setup the Window
 win = visual.Window(
-    fullscr=True, screen=0, 
+    size = (1920, 1080), fullscr=True, screen=0, 
     winType='pyglet', allowGUI=False, allowStencil=False,
     monitor='testMonitor', color="Gainsboro", colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -282,9 +252,6 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
-
-
-
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
@@ -295,13 +262,9 @@ defaultMouse = event.Mouse(win=win, visible=True)
 
 
 
-
-
 introClock = core.Clock()
 trialClock = core.Clock()
 goodbye_Clock = core.Clock()
-
-
 
 
 # Initialize components for Routine "intro"
@@ -557,7 +520,8 @@ win.flip()  # get a blank screen
 
 # In these two practice trial, nothing is recorded
 
-statements = [["Danielle n'est vraiment pas fiable.", "Danielle n'aime pas la critique.","Danielle a été impolie avec sa patronne." ],["Cindy danse.", "Cindy porte une petite robe.", "Les hommes applaudissent et sifflent quand Cindy danse."]]
+statements = [["Danielle n'est vraiment pas fiable.", "Danielle n'aime pas la critique.","Danielle a été impolie avec sa patronne." ],
+              ["Cindy danse.", "Cindy porte une petite robe.", "Les hommes applaudissent et sifflent quand Cindy danse."]]
 orderedSliderSubjectList = [["Danielle oublie souvent ses devoirs.", "Danielle est une mauvaise mère.", "Danielle n'est pas une bonne cuisinière.", "Danielle a été renvoyée de son emploi."],
                             ["Cindy est à un party.", "Cindy est droguée dans un rave.", "Cindy est un membre d'un groupe de musique populaire.", "Cindy est une stripteaseuse."]]
 
@@ -687,10 +651,10 @@ for i in range(2):
             componentUpdate(sliderV3, t, frameN)
             componentUpdate(sliderV4, t, frameN)
             
-            sliderV1.setText("{r:1.1f}%".format(r=slider1.markerPos*100))
-            sliderV2.setText("{r:1.1f}%".format(r=slider2.markerPos*100))
-            sliderV3.setText("{r:1.1f}%".format(r=slider3.markerPos*100))
-            sliderV4.setText("{r:1.1f}%".format(r=slider4.markerPos*100))
+            sliderV1.setText("{r:1.0f}%".format(r=slider1.markerPos*100))
+            sliderV2.setText("{r:1.0f}%".format(r=slider2.markerPos*100))
+            sliderV3.setText("{r:1.0f}%".format(r=slider3.markerPos*100))
+            sliderV4.setText("{r:1.0f}%".format(r=slider4.markerPos*100))
             
             
             #---------------check for special keys and conditions---------------
@@ -1016,13 +980,12 @@ for thisTrial in trials:
     
 
 
-
-
-
-
-
-
-
+# these shouldn't be strictly necessary (should auto-save)
+thisExp.saveAsWideText(filename+'.csv')
+thisExp.saveAsPickle(filename)
+logging.flush()
+# make sure everything is closed down
+thisExp.abort()  # or data files will save again on exit
 
 
 # ------Prepare to start Routine "goodbye_"-------
@@ -1082,13 +1045,10 @@ while True:
     # refresh the screen
     win.flip()
     
-    
-    
-    
-    
+goodbyeText.setAutoDraw(False)
     
 # --------------------------------Ending Routine "goodbye_"--------------------------------
-goodbyeText.setAutoDraw(False)
+
 
 
 
@@ -1097,13 +1057,6 @@ goodbyeText.setAutoDraw(False)
 # Flip one final time so any remaining win.callOnFlip() 
 # and win.timeOnFlip() tasks get executed before quitting
 win.flip()
-
-# these shouldn't be strictly necessary (should auto-save)
-thisExp.saveAsWideText(filename+'.csv')
-thisExp.saveAsPickle(filename)
-logging.flush()
-# make sure everything is closed down
-thisExp.abort()  # or data files will save again on exit
 win.close()
 core.quit()
 

@@ -1,0 +1,5 @@
+﻿set,jarPicture,A,B,colorSequence,Target_Distractor
+set1,C:\\Users\\que_d\\Documents\\McGill\\LepageLab\\psychopyExperiment_github\\BeadsTask\\BeadPicturesExp\\picture1_YB.png,Yellow,DarkBlue,AABAAABAAA,Distractor
+set2,C:\\Users\\que_d\\Documents\\McGill\\LepageLab\\psychopyExperiment_github\\BeadsTask\\BeadPicturesExp\\picture2_RG.png,Maroon,Lime,AAABAAAABA,Target
+set3,C:\\Users\\que_d\\Documents\\McGill\\LepageLab\\psychopyExperiment_github\\BeadsTask\\BeadPicturesExp\\picture3_GB.png,Lime,DarkBlue,BAAAABAAAA,Distractor
+set4,C:\\Users\\que_d\\Documents\\McGill\\LepageLab\\psychopyExperiment_github\\BeadsTask\\BeadPicturesExp\\picture4_BR.png,DarkBlue,Maroon,AAAABAABAA,Distractor

@@ -10,6 +10,52 @@ If you publish work using this script please cite the PsychoPy publications:
         Frontiers in Neuroinformatics, 2:10. doi: 10.3389/neuro.11.010.2008
 """
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------- #
+
+    #1. **IMPORTANT** since the csv file contains french accents, when saving as csv file, you need to be carefule to select "UTF-8" type of csv, or error will happen
+    
+    #2. **IMPORTANT**: format note:
+    
+        #   **IMPORTANT** the condition file must contain the headers:
+        
+            #  ===============================================================
+            #  ||    img_1     img_2    img_3    txt_1    txt_2    txt_3    ||
+            #  ===============================================================
+            
+                #   img_* are the path for the picture, including the post-fix of picture at the end
+                #   put the slash in file path as "\\", or may not work in some cases (like on my PC
+                #   txt_* are the words displayed
+                
+            # it's case sensitive, and mustn't be other names
+            # the order doesn't mater
+            # Everything that is in the original csv file (e.g. the name of the trial) will be saved automatically in the resulting data file (THANKS YOU PSYCHOPY!)
+            # only csv files are allowed
+        
+                
+    #3. If you are certain about your path and want to avoid user interface popping up everytime:
+    
+            # 1) around line 210, comment out these lines 
+            
+                # conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  
+                 # if not conditionFile:
+                #   core.quit
+            
+            # 2.1) place "  conditionFile[0]=["YOUR_FILE_PATH"] " after the above commented lines
+            
+            # OR:
+            
+            # 2.2) around line433, replace "conditionFile[0]" in "trialList=data.importConditions(conditionFile[0]),"  with your condition file path
+                # path is a string type
+                # remember to replace "/" with "\\" in windows (sometimes error occurs)
+                
+    #4. unit of lengh = height (relative to the height of the screen)
+        # (0,0) is at the center
+        # may need adjustment according to computers
+        
+# ----------------------------------------------------------------------------------------------- #
+
 
 from __future__ import absolute_import, division
 from psychopy import locale_setup, sound, gui, visual, core, data, event, logging, clock, event
@@ -29,50 +75,7 @@ from psychopy.visual import Circle, Rect
 
 from pyglet.window import key  # used to detect and record key presses
 
-# =================================================================================================================
-
-    #1. **IMPORTANT** since the csv file contains french accents, when saving as csv file, you need to be carefule to select "UTF-8" type of csv, or error will happen
-    
-    #2. **IMPORTANT**: format note:
-    
-        #   **IMPORTANT** the condition file should contain the headers:
-        
-            #  =========================================================
-            #  ||    img_1    img_2   img_3   txt_1   txt_2   txt_3   ||
-            #  =========================================================
-            
-            # it's case sensitive, and mustn't be other names
-            # the order doesn't mater
-             # Everything that is in the original csv file (e.g. the name of the trial) will be saved automatically in the resulting data file (THANKS YOU PSYCHOPY!)
-            
-        #   img_* are the path for the picture, including the post-fix of picture at the end
-        #       remember to put the slash in file path as "\\", or may not work in some cases (like on my PC
-        #   txt_* are the words displayed
-        #   for convinience, only csv files are allowed
-        
-    
-                # (consider modify into non-specific namings
-                
-    #3. If you are certain about your path and want to avoid user interface popping up everytime:
-    
-            # 1) around line213 comment out these lines 
-            
-                # conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  
-                 # if not conditionFile:
-                #   core.quit
-                
-            # 2) around line536, replace "conditionFile[0]" in "trialList=data.importConditions(conditionFile[0]),"  with your condition file path
-                # path is a string type
-                # remember to replace "/" with "\\" in windows (sometimes error occurs)
-                
-    #4. unit of lengh = height (relative to the height of the screen)
-        # (0,0) is at the center
-        # may need adjustment according to computers
-        
-    
-# ====================================Some functions====================================
-
-
+# -----some-functions-----
 
     # function for Updating txt and img
 def componentUpdate(component, time, frameN, isFirst):
@@ -118,23 +121,14 @@ def initiateComponent(Component):
     if hasattr(Component, 'status'):
         Component.status = NOT_STARTED
     
-    
-
-# ============================================================================================================
-
-
-
-
-
-# ====================================Some parameters====================================
-
+# ---------------------------------------------some-variables---------------------------------------------
 
 
 #====Time parameters(unit: frame)====
 
 
 
-timeConfidence = 4  # The time we believe after which the participant have made their decision
+timeConfidence = 2  # The time we believe after which the participant have made their decision
 
 
 timeFadeIn = 2  #  time for the image to fade in
@@ -215,29 +209,12 @@ expInfo['psychopyVersion'] = psychopyVersion
 
 conditionFile = gui.fileOpenDlg(".", prompt = "Please Select the Condition File", allowed = "*.csv")  # a list object, save the path(including the name) of the file selected, conditionFile[0] gives the file name string
    
-    
-    
 if not conditionFile:
     core.quit
     
 
-
-
-
-
-
-
-
-
-
-
-
 # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
 filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])
-
-
-
-
 
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
@@ -252,18 +229,9 @@ logging.console.setLevel(logging.WARNING)  # this outputs to the screen, not a f
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
-
-
-
-
-
-
-
 #--------------------#
 #---initialization---#
 #--------------------#
-
-
 
 # Start Code - component code to be run before the window creation
 
@@ -276,27 +244,14 @@ win = visual.Window(
     units='height')
     
 
-
-    
-# ====================================Add pyglet window start====================================
-    
-
 # initialize pyglet trick
 # Some newer method is available (using key hardware), but this trick still works
 # not sure how to detect key press and release using keyboard hardware class
 
 keyState = key.KeyStateHandler()
 win.winHandle.push_handlers(keyState)
-
-
-# ====================================Add pyglet window end====================================
     
-
-
-
-
 frameDur = None # place holder
-
 
 # store frame rate of monitor if we can measure it
 expInfo['frameRate'] = win.getActualFrameRate()
@@ -305,29 +260,13 @@ if expInfo['frameRate'] != None:
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
 
-
-
-
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard()
 
-
-
-
-
-
-
-
-# ====================================Add mouse start====================================
-
-
+# add mouse
 myMouse = event.Mouse(newPos = (1,1))
 myMouse.setVisible(False)
 pos = myMouse.getPos()  # add the position
-
-
-# ====================================Add moues start====================================
-
 
 
 expTitle = visual.TextStim(win=win, name='introText',
@@ -338,9 +277,6 @@ expTitle = visual.TextStim(win=win, name='introText',
     languageStyle='LTR',
     depth=0.0);
 
-
-
-
 introText = visual.TextStim(win=win, name='introText',
     text = instructionText,    
     font='Arial',
@@ -349,8 +285,6 @@ introText = visual.TextStim(win=win, name='introText',
     languageStyle='LTR',
     depth=0.0);
 
-
-
 goodbyeText = visual.TextStim(win=win, name='goodbyeText',
     text='Thank you for participate, press space to quit',
     font='Arial',
@@ -358,14 +292,8 @@ goodbyeText = visual.TextStim(win=win, name='goodbyeText',
     color='black', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
     depth=0.0);
-    
-    
-    
-    
+
 # Initialize components for Routine
-
-
-
 
 slider = visual.Slider(win=win, name='slider',
     size=(0.05, 0.6), pos=(0.5, 0),
@@ -374,11 +302,8 @@ slider = visual.Slider(win=win, name='slider',
     color='black', font='HelveticaBold',
     flip=False, units="height")
     
-    
 #  notice that the "size" of the slider controls whether the slider is verticle or horizontal
 #  change to desired style, using the in-built visual stimulus from psychopy
-    
-    
     
 slider.marker = Circle(win, 
                         radius = slider.size[0]*0.5,  # The radius should be half the width 
@@ -393,8 +318,6 @@ slider.line = Rect(win, units=slider.units,
                         lineColor='black', 
                         fillColor = 'gray',
                         autoLog=False)
-    
-    
     
 text1 = visual.TextStim(win=win, name='text1',
     text='default text',
@@ -447,21 +370,13 @@ image3 = visual.ImageStim(
     color=[1,1,1], colorSpace='rgb', opacity=0.0,
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-6.0)
-
-
-
-
-
+    
 # instructionclock also later re-used for goodbye message
 InstructionClock = core.Clock()
 
-
-
-#-------------------------#
-#-------Instruction-------#
-#-------------------------#
-
-
+#---------------------------------------------------------------------------#
+#-----------------------------------INTRO-----------------------------------#
+#---------------------------------------------------------------------------#
 
 
 # ------Prepare to start Routine "Instruction"-------
@@ -469,39 +384,27 @@ t = 0
 InstructionClock.reset()  # clock
 frameN = -1
 continueRoutine = True
-
-
-
 # initialize the instruction text
 initiateComponent(expTitle)
 initiateComponent(introText)
-
-
-
 
 
 # -------Start Routine "Instruction"-------
 while True:
     
     
-
     if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:  # Fixate the mouse to the upper-right conor
         myMouse.setPos(newPos = (1,1))
-    
-    
-    
+        
     # get current time
     t = InstructionClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    
     
     # update/draw components on each frame
     # *Instruct* updates
     if t >= 0.0:
         componentUpdate(expTitle, t, frameN, True)
         componentUpdate(introText, t, frameN, True)
-        
-        
         
     # check for quit (typically the Esc key)
     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -510,27 +413,18 @@ while True:
     # check if all components have finished
     if defaultKeyboard.getKeys(keyList=["space"]):  # a forced-end of Routine when pressed space
         introText.setAutoDraw(False)
-        expTitle.setAutoDraw(False)
-        
+        expTitle.setAutoDraw(False)        
         break
-        
-        
+      
     # refresh the screen
     win.flip()
-    
-    
 
 win.flip()  # get a blank screen
 #core.wait(timeBuffering)  # buffering for participant
 
-
-# -------Ending Routine "Instruction"-------
-        
-thisExp.addData('Instruct.started', introText.tStartRefresh)
-thisExp.addData('Instruct.stopped', introText.tStopRefresh)
-
-
-
+#---------------------------------------------------------------------------------------------------#
+#-------------------------------------------FORMAL-TRIALS-------------------------------------------#
+#---------------------------------------------------------------------------------------------------#
 
 # set up handler to look after randomisation of conditions etc
 
@@ -538,13 +432,7 @@ Repeat = data.TrialHandler(nReps=1, method='sequential',
     extraInfo=expInfo, originPath=-1,
     trialList=data.importConditions(conditionFile[0]),
     seed=None, name='Repeat')
-    
-    
-    
 thisExp.addLoop(Repeat)  # add the loop to the experiment
-
-
-
 thisRepeat = Repeat.trialList[0]  # so we can initialise stimuli with some values
 
 # abbreviate parameter names if possible (e.g. rgb = thisRepeat.rgb)
@@ -552,18 +440,9 @@ if thisRepeat != None:
     for paramName in thisRepeat:
         exec('{} = thisRepeat[paramName]'.format(paramName))
 
-
-# Three images and three texts
-
-
-
 #--------------------#
 #-------Repeat-------#
 #--------------------#
-
-
-
-
 
 for thisRepeat in Repeat:
 
@@ -578,19 +457,11 @@ for thisRepeat in Repeat:
             
             
             
-    
-    
-    
-    
+
     #--------------------#
     #-------Trials-------#
     #--------------------#
-    
-    
-    
-    
-    
-    
+
     # update component parameters for each repeat
     slider.reset()
     text1.setText(txt_1)
@@ -599,19 +470,8 @@ for thisRepeat in Repeat:
     image1.setImage(img_1)
     image2.setImage(img_2)
     image3.setImage(img_3)
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     # ------Prepare to start Routine "Trials"-------
-    
-    
-    
     
     sliderHistorySecond = [] # store here the rating and the time at point wanted
     
@@ -619,11 +479,8 @@ for thisRepeat in Repeat:
     
     for thisComponent in TrialsComponents:
         initiateComponent(thisComponent)  # set the values to None
-    
 
-    
     core.wait(timeBuffering)  #blank screen for time buffering
-    
     
     hasRespond = False  # check if the participant has responded or not
     continueRoutine = True  # check if continue routine or not
@@ -632,39 +489,27 @@ for thisRepeat in Repeat:
     t = 0
     entering = 0  # for each repeat, entering start from 0, therefore need to be initialized outside of the loop
     
-    
     # initialize some clocks
     TrialsClock = core.Clock()  #  Create some handy timers
-    countDown = core.CountdownTimer()   # Used to detect whether we reached the timeConfidence
+    countDown = core.CountdownTimer(timeConfidence)   # Used to detect whether we reached the timeConfidence
     
     
     # create a keyboard to record all the keys pressed during one repeat
     trialKeyboard = keyboard.Keyboard()
     
-    
     event.clearEvents()  # clean up buffer before entering to the loop (not sure why it couldn't remove the keys with negative reaction time, and this is why I added getKeys() to remove)
     trialKeyboard.getKeys()  # to remove the keys that was pressed during the buffering periods, or we will get negative reaction time for those keys
     
-    
     # reset the clocks to starting time
     TrialsClock.reset()  # clock of the trial
-    countDown.reset(t=timeConfidence)  # clock for timeConfidence
-    
-    
-    
-    
+    countDown.reset()  # clock for timeConfidence
     
     # -------Start Routine "Trials"-------
     while continueRoutine:
         # get current time
         
-        
         t = TrialsClock.getTime()  # current time
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-
-    
-    
-    
         
         if myMouse.getPos()[0]!= 1 or myMouse.getPos()[1] != 1:# Fixate the mouse
             myMouse.setPos(newPos = (1,1))
@@ -673,19 +518,13 @@ for thisRepeat in Repeat:
             # may be due to the mouse initialization in the slider class
             # Therefore I just fixiated it s.t. it won't be used
             
-            
-            
-            
         # update/draw components on each frame
-        
-        
         
         #---------------#
         #---------------#
         #-slider-update-#
         #---------------#
         #---------------#
-        
         
         #  Movement and record updates
         #  changed to DOWN and UP according since it's a verticle slider
@@ -697,13 +536,13 @@ for thisRepeat in Repeat:
             if keyState[key.DOWN]:
                 newRat = slider.rating - sliderSpeed
                 slider.rating = newRat
-                countDown.reset(t = timeConfidence)
+                countDown.reset()
                 hasRespond = True
             
             if keyState[key.UP]:
                 newRat = slider.rating + sliderSpeed
                 slider.rating = newRat
-                countDown.reset (t = timeConfidence)
+                countDown.reset ()
                 hasRespond = True
                 
             
@@ -716,8 +555,6 @@ for thisRepeat in Repeat:
                 
             #update slider
             componentUpdate(slider, t, frameN, False)
-        
-        
         
         
         #-------------------------#
@@ -738,17 +575,11 @@ for thisRepeat in Repeat:
         #    when entering = 3, image3 & txt3 finished, stop the entire trial
         
         
-        
         if countDown.getTime() <= 0 and hasRespond:  # countDown is a count-down timer, with parameter "timeConfidence"
-            
-            
-            
-                 
             
             entering += 1  #implement by 1
             command = "pass"  #place holder
             
-
             #entering = 1, 2
             
             if entering < 3:
@@ -759,52 +590,33 @@ for thisRepeat in Repeat:
                 command = "text{}.setAutoDraw(False)\nimage{}.setAutoDraw(True)\ntext{}.setAutoDraw(True)".format(str(entering), str(entering+1), str(entering+1))  # starts the next image
                 command +="\nkeyRecord{} = trialKeyboard.getKeys(['up','down'])".format(str(entering))#  get the keys here (getKeys get the respond starting from the last call of getKeys)
                 
-                
                 if entering == 2: # after the end of the second image
-                    
                     
                     command += "\nslider.readOnly = True"  # set slider to read only for the third picture
                     
                     hasRespond = True  # When we are at the second image, set it True for the third image
                     
-                    
-                    
                     # Note: since the keyboards seems to be using the same buffer, if stop recording the keyboard input here, the defaultKeyboard won't be able to catch escape and space for exiting the program later
-                    
                     
                 exec(command)
                 exec("tmp = image{}.tStart".format(str(entering)))
                 
-                
                 sliderHistorySecond.append([slider.getRating(), (t-timeConfidence-tmp)])  # record rating and the time of decision, append it to the list
                 # This is the rating and time for making the decision, should get two pairs since there shouldn't be any rating for the third picture
-               
                 
-            
             #entering = 3
             
             if entering == 3:
                 
                 continueRoutine = False  # stop the routine
                 
-            
-            
-            countDown.reset(t = timeConfidence)  # reset the clock at the end s.t can count down again
-            
-            
-            
-            
-            
+            countDown.reset()  # reset the clock at the end s.t can count down again
             
         #------------------------#
         #------------------------#
         #-image-and-text-updates-#
         #------------------------#
         #------------------------#
-        
-        
-        # Notice that this can't be moved before the switching, because
-        
         
         # text1 + image 1 updates after the "timeStartedOne"
         if t >= timeStartOne:
@@ -813,10 +625,8 @@ for thisRepeat in Repeat:
             componentUpdate(image1, t, frameN, True)
             
             
-            
         # update opacity of img1
         imgFadeIn(image1, frameN, timeFadePara)
-        
         
         # text2 + image2 updates
         componentUpdate(text2, t, frameN, False)
@@ -824,9 +634,6 @@ for thisRepeat in Repeat:
         
         # update opacity of img2
         imgFadeIn(image2, frameN, timeFadePara)
-        
-        
-        
         
         # text3 + image3 updates
         componentUpdate(text3, t, frameN, False)
@@ -836,16 +643,11 @@ for thisRepeat in Repeat:
         imgFadeIn(image3, frameN, timeFadePara)
         
         
-        
-        
         #--------------------------------#
         #--------------------------------#
         #----check-special-conditions----#
         #--------------------------------#
         #--------------------------------#
-        
-        
-        
         
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -858,11 +660,7 @@ for thisRepeat in Repeat:
         # refresh the screen
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
-    
-    
-    
-    
-    
+            
     #---------------------------#
     #---------------------------#
     #-----end-and-save-data-----#
@@ -874,8 +672,6 @@ for thisRepeat in Repeat:
     for thisComponent in TrialsComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    
-    
     
     Repeat.addData('slider.started', slider.tStart)
     Repeat.addData('slider.stopped', slider.tStop)
@@ -893,7 +689,6 @@ for thisRepeat in Repeat:
     Repeat.addData('image3.stopped', image3.tStop)
     
     
-    
     # place holder
     addKeys1 = []
     addKeys2 = []
@@ -906,45 +701,30 @@ for thisRepeat in Repeat:
         
     for k in keyRecord2:
         addKeys2.append([k.name, k.rt-image2.tStart, k.duration])
-    
-    
+        
     
     Repeat.addData("slider.history_rating_timePoint", sliderHistorySecond)   # the slider rating and time, no movement for confidence time
     Repeat.addData("keyboard.record_name_rt_duration_img1", addKeys1)  #record for img 1
     Repeat.addData("keyboard.record_name_rt_duration_img2", addKeys2)
     
-    
-    
-    
-    
-    
     win.flip()
     thisExp.nextEntry()
     
-    
     # completed 1 repeats of 'Repeat'
-    
-    
     
 # these shouldn't be strictly necessary (should auto-save)
 thisExp.saveAsWideText(filename+'.csv')
 thisExp.saveAsPickle(filename)
 win.saveFrameIntervals(fileName = "allFrameTimes.txt", clear = True)
 logging.flush()
+# make sure everything is closed down
+thisExp.abort()  # or data files will save again on exit
 
 
 
-
-
-
-
-
-#-------------------------#
-#---------Goodbye---------#
-#-------------------------#
-
-
-
+#---------------------------------------------------------------------------#
+#----------------------------------Goodbye----------------------------------#
+#---------------------------------------------------------------------------#
 
 # ------Prepare to start Routine "Instruction"-------
 t = 0
@@ -952,27 +732,22 @@ InstructionClock.reset()  # reusing the clock for instruction
 frameN = -1
 continueRoutine = True
 
-
 # initialize goodbye text
 initiateComponent(goodbyeText)
 
-
 # -------Start Routine "goodBye"-------
-
 
 while True:
     
     # get current time
     t = InstructionClock.getTime()
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
-    
-    
+        
     # update/draw components on each frame
     # *Instruct* updates
     if t >= 0.0:
         componentUpdate(goodbyeText, t, frameN, True)
-        
-        
+                
     # check for quit (typically the Esc key)
     if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
         core.quit()
@@ -987,17 +762,12 @@ while True:
     # refresh the screen
     win.flip()
     
-    
-
 
 # Flip one final time so any remaining win.callOnFlip() 
 # and win.timeOnFlip() tasks get executed before quitting
 win.flip()
-
-
-# make sure everything is closed down
-thisExp.abort()  # or data files will save again on exit
-
-
 win.close()
 core.quit()
+
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
